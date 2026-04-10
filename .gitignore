@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# OS files
+.DS_Store
+.Rhistory
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Data (large files - users should download from Kaggle)
+# Uncomment the line below if you don't want to track the CSV in git
+# data/WA_Fn-UseC_-Telco-Customer-Churn.csv
