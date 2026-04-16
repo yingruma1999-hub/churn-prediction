@@ -1,115 +1,183 @@
-# Telecom Customer Churn Prediction
+<h1 align="center">📱 Telecom Customer Churn Prediction</h1>
+<h3 align="center">From Predictive Modeling to Dollar-Denominated Business Strategy</h3>
 
-A complete end-to-end machine learning project that predicts customer churn for a telecom company — from exploratory data analysis through model comparison, explainability, economics-driven business strategy, and A/B test design.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/scikit--learn-Random%20Forest-orange?logo=scikitlearn" />
+  <img src="https://img.shields.io/badge/XGBoost-Gradient%20Boosting-green" />
+  <img src="https://img.shields.io/badge/SHAP-Explainability-blueviolet" />
+  <img src="https://img.shields.io/badge/A%2FB%20Test-Power%20Analysis%20%7C%20Bootstrap-red" />
+</p>
 
-## 📋 Project Overview
+---
 
-Customer churn (attrition) is a critical business challenge in the telecom industry. This project uses the [Telco Customer Churn dataset](https://www.kaggle.com/datasets/blastchar/telco-customer-churn) (7,043 records, 21 features) to:
+## 🎯 Executive Summary
 
-1. **Explore** customer demographics, service usage, and billing patterns
-2. **Identify** key drivers of churn through EDA and feature importance analysis
-3. **Build** three predictive models (Logistic Regression, Random Forest, XGBoost) with rigorous evaluation
-4. **Validate** using a 3-way stratified split (Train 60% / Test 20% / Validation 20%) and 5-fold cross-validation
-5. **Explain** model predictions using SHAP (SHapley Additive exPlanations) for global and individual-level interpretability
-6. **Quantify** business impact through unit economics simulation, ROI sensitivity analysis, and profit-maximizing threshold selection
-7. **Design** a retention A/B test with statistical power analysis and bootstrap simulation
-8. **Recommend** actionable, dollar-denominated retention strategies
+> **The Problem:** A telecom company loses ~26% of its customers to churn. Identifying who will leave — and intervening profitably — is critical.
+>
+> **The Solution:** Built an end-to-end ML pipeline: **3 models compared → SHAP explainability → unit economics → profit-optimizing threshold → A/B test design**. The best model (Random Forest, AUC = 0.844) catches **75% of churners** and is profitable across retention costs from $20 to $100.
+>
+> **Business Impact:** Lowering the decision threshold from 0.50 → 0.36 increases expected profit by ~$53K. A simulated retention A/B test shows **14.5% churn reduction** with ~$26K net annual ROI.
 
-## 📊 Key Results
+---
 
-### Model Performance (Test Set)
+## 📊 Key Results at a Glance
 
-| Metric | Logistic Regression | Random Forest | XGBoost | Winner |
-|--------|:---:|:---:|:---:|:---:|
-| Accuracy | 0.802 | 0.767 | 0.759 | LR |
-| Precision (Churn) | 0.658 | 0.544 | 0.534 | LR |
-| **Recall (Churn)** | 0.529 | **0.749** | 0.730 | **RF** |
-| F1-Score | 0.587 | 0.630 | 0.617 | RF |
-| AUC | 0.836 | 0.837 | 0.825 | RF |
-| CV AUC (5-fold) | 0.849 ± 0.012 | 0.849 ± 0.013 | 0.832 ± 0.011 | LR / RF |
+### Model Comparison (Test Set)
 
-**Final Validation (Random Forest):** AUC = 0.844, Churn Recall = 75%, confirming strong generalization with no overfitting.
+| Metric | Logistic Regression | Random Forest 🏆 | XGBoost |
+|:-------|:-------------------:|:-----------------:|:-------:|
+| **Churn Recall** | 52.9% | **74.9%** | 73.0% |
+| AUC | 0.836 | **0.837** | 0.825 |
+| CV AUC (5-fold) | 0.849 | **0.849** | 0.832 |
+| Validation AUC | — | **0.844** | — |
 
-### Business Economics Highlights
+<p align="center">
+  <img src="assets/model_comparison.png" width="95%" alt="Model performance bar chart and ROC curves — Random Forest achieves highest AUC and recall" />
+</p>
 
-| Metric | Value |
-|--------|-------|
-| Optimal threshold (τ) | 0.36 (F1-maximized) |
-| Expected profit (validation set) | ~$53K across cost assumptions |
-| Profitable retention cost range | $20 – $100 per customer |
-| A/B test simulated churn reduction | 14.5% (95% CI: 7.3% – 21.8%) |
-| Estimated annual revenue saved | ~$42,605 |
-| Net ROI after campaign costs | ~$26,055/year |
+> **Random Forest** is the recommended model: highest churn recall (75%), best F1 (0.63), and validated AUC (0.844) confirming no overfitting.
 
-## 🔍 Key Findings
+---
 
-- **Tenure** is the strongest predictor — new customers are most vulnerable
-- **Month-to-month contracts** have dramatically higher churn rates
-- **Higher monthly charges** correlate with increased attrition
-- **Electronic check payment** is associated with higher churn
-- **Lack of support services** (OnlineSecurity, TechSupport) increases churn risk
-- **Fiber optic customers** churn at 2.2× the rate of DSL, suggesting a pricing or service quality gap
-- The retention model is **profitable across a wide range of assumptions**, with clear go/no-go decision criteria from the A/B test framework
+## 🔍 What Drives Churn? (SHAP Explainability)
 
-## 🛠️ Tech Stack
+### Global Feature Impact
 
-- **Python 3.x**
-- **pandas** — data manipulation
-- **NumPy** — numerical computing
-- **Matplotlib / Seaborn** — data visualization
-- **scikit-learn** — machine learning (Logistic Regression, Random Forest, cross-validation, metrics)
-- **XGBoost** — gradient boosting classifier
-- **SHAP** — model explainability (global & local explanations)
-- **SciPy** — statistical power analysis and hypothesis testing
+<p align="center">
+  <img src="assets/shap_summary.png" width="80%" alt="SHAP summary plot showing tenure, contract type, and monthly charges as top churn drivers" />
+</p>
 
-## 📁 Project Structure
+> **Top 3 churn drivers:** Short tenure (new customers), month-to-month contracts, and high monthly charges. Customers without TechSupport or OnlineSecurity are also at elevated risk.
+
+### Individual Prediction — Why This Customer Churned
+
+<p align="center">
+  <img src="assets/shap_waterfall.png" width="80%" alt="SHAP waterfall plot explaining a single customer's churn prediction" />
+</p>
+
+> SHAP waterfall plots make every prediction **transparent and actionable** — retention teams can see exactly which factors to address for each customer.
+
+### Segment-Level Insight: Contract Type
+
+<p align="center">
+  <img src="assets/shap_contract_segment.png" width="85%" alt="SHAP impact comparison: month-to-month vs long-term contract customers" />
+</p>
+
+> Month-to-month customers show 3× higher SHAP impact from MonthlyCharges and tenure — they are **price-sensitive and flight-risk in early months**.
+
+---
+
+## 💰 Business Economics
+
+### ROI Sensitivity — Profitable Across Assumptions
+
+<p align="center">
+  <img src="assets/roi_heatmap.png" width="85%" alt="ROI sensitivity heatmap: green (profitable) zone spans retention costs $20-$100" />
+</p>
+
+> The model is **profitable (green zone) across a wide range of operating conditions** — from $20 to $100 per retention contact, and across probability thresholds from 0.20 to 0.70.
+
+### Profit-Maximizing Threshold
+
+<p align="center">
+  <img src="assets/threshold_optimization.png" width="85%" alt="Profit curve showing optimal threshold at τ=0.36, yielding ~$53K profit" />
+</p>
+
+> **Lowering the threshold from 0.50 → 0.36** captures more at-risk customers and **maximizes total expected profit at ~$53K** — a significant improvement over the default cutoff.
+
+---
+
+## 🧪 A/B Test Design & Simulation
+
+### Simulated Retention Experiment (10,000 Bootstrap Iterations)
+
+<p align="center">
+  <img src="assets/ab_test_simulation.png" width="90%" alt="Bootstrap distribution of treatment effect and simulated churn rate distributions" />
+</p>
+
+| Metric | Result |
+|:-------|:------:|
+| Churn reduction | **14.5%** |
+| 95% Confidence Interval | [7.3%, 21.8%] |
+| P-value | < 0.001 ✅ |
+| Customers saved per batch | ~55 |
+| Annual revenue preserved | ~$42,600 |
+| Campaign cost | ~$16,500 |
+| **Net ROI** | **~$26,000/year** |
+
+---
+
+## 🛠 Methodology Pipeline
+
+```
+EDA & Cleaning → Feature Engineering → 3-Way Stratified Split (60/20/20)
+    → 3-Model Comparison (LR / RF / XGBoost) with 5-Fold CV
+        → SHAP Explainability (Global + Local + Segment)
+            → Unit Economics & ROI Heatmap
+                → Profit-Maximizing Threshold (τ=0.36)
+                    → A/B Test Power Analysis & Bootstrap Simulation
+                        → Go/No-Go Decision Framework
+```
+
+### Strategic Recommendations (SHAP-Driven)
+
+| Priority | Segment | Root Cause | Intervention |
+|:--------:|---------|------------|-------------|
+| 🔴 1 | Month-to-month + Low tenure | Price sensitivity, no lock-in | 15–20% loyalty discount for 12-month conversion |
+| 🔴 2 | Fiber optic users | 2.2× churn rate vs DSL | Service quality audit + competitive pricing review |
+| 🟡 3 | No TechSupport/Security | Missing protective bundles | 3-month free trial auto-enrollment |
+| 🟡 4 | Electronic check payers | Payment friction | $5/month autopay migration incentive |
+
+---
+
+## 🗂 Project Structure
 
 ```
 churn-prediction/
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── churn prediction.ipynb    # Main analysis notebook
+├── churn prediction.ipynb    # Full analysis notebook (84 cells)
+├── README.md                 # ← You are here
+├── requirements.txt          # Python dependencies
+├── assets/
+│   ├── model_comparison.png
+│   ├── shap_summary.png
+│   ├── shap_waterfall.png
+│   ├── shap_contract_segment.png
+│   ├── roi_heatmap.png
+│   ├── threshold_optimization.png
+│   ├── feature_importance.png
+│   └── ab_test_simulation.png
 └── data/
     └── WA_Fn-UseC_-Telco-Customer-Churn.csv
 ```
 
-## 🚀 Getting Started
+---
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/<your-username>/churn-prediction.git
-   cd churn-prediction
-   ```
+## 🚀 Quick Start
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+git clone https://github.com/yingruma1999-hub/churn-prediction.git
+cd churn-prediction
+pip install -r requirements.txt
+jupyter notebook "churn prediction.ipynb"
+```
 
-3. Download the dataset from [Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn) and place it in the `data/` folder.
+---
 
-4. Open and run the notebook:
-   ```bash
-   jupyter notebook "churn prediction.ipynb"
-   ```
+## 📌 Key Takeaway
 
-## 📓 Notebook Structure
+> **This project goes beyond "build a model and report AUC."** It answers the questions stakeholders actually ask:
+> - *"How much money does this save us?"* → $53K expected profit at optimal threshold
+> - *"Which customers should we contact?"* → SHAP-driven segment prioritization
+> - *"How do we validate this before scaling?"* → Full A/B test design with power analysis
+> - *"What's the ROI?"* → ~$26K/year net, robust across cost assumptions
+>
+> **The complete pipeline — prediction → economics → experimentation — demonstrates production-readiness.**
 
-| Section | Description |
-|---------|-------------|
-| 1. Data Loading & Overview | Load dataset, inspect shape, types, and columns |
-| 2. Data Cleaning | Handle missing values in TotalCharges |
-| 3. Exploratory Data Analysis | Visualize churn patterns across demographics, services, contracts, and billing |
-| 4. Data Preprocessing | Feature engineering, one-hot encoding, 3-way stratified split (60/20/20) |
-| 5.1 Logistic Regression | Baseline model with 5-fold CV |
-| 5.2 Random Forest | Ensemble model with class balancing and 5-fold CV |
-| 5.3 XGBoost | Gradient boosting with scale_pos_weight and 5-fold CV |
-| 5.4 SHAP Explainability | Global (summary plot) and local (waterfall) model explanations |
-| 6. Model Comparison & Conclusion | 3-model comparison, final validation, business recommendations |
-| 7. Business Economics & Unit Economics | CLV/ROI sensitivity, profit-maximizing threshold, SHAP→business strategy, segment analysis |
-| 8. A/B Test Design & Simulation | Power analysis, bootstrap retention experiment, go/no-go decision framework |
+---
 
-## 📝 License
+## 👤 Author
 
-This project is for educational and portfolio purposes.
+**Yingru Ma** · Economics Background · Targeting DS / PM Roles
+
+[![GitHub](https://img.shields.io/badge/GitHub-yingruma1999--hub-181717?logo=github)](https://github.com/yingruma1999-hub)
