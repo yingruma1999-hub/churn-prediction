@@ -176,6 +176,12 @@ jupyter notebook "churn prediction.ipynb"
 
 ---
 
+## 📂 Data Source
+
+> **IBM Telco Customer Churn** — synthetic dataset from [Kaggle](https://www.kaggle.com/blastchar/telco-customer-churn). No real customer PII.
+
+---
+
 ## 👤 Author
 
 **Yingru Ma** · Economics Background · Targeting DS / PM Roles
