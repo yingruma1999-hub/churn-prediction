@@ -17,7 +17,7 @@
 >
 > **The Solution:** Built an end-to-end ML pipeline: **3 models compared → SHAP explainability → unit economics → profit-optimizing threshold → A/B test design**. The best model (Random Forest, AUC = 0.844) catches **75% of churners** and is profitable across retention costs from $20 to $100.
 >
-> **Business Impact:** Lowering the decision threshold from 0.50 → 0.36 increases expected profit by ~$53K. A simulated retention A/B test shows **14.5% churn reduction** with ~$26K net annual ROI.
+> **Business Impact:** Lowering the decision threshold from 0.50 → 0.36 increases expected profit by ~$53K. A transparent P&L breakdown (Section 7.2.1–7.2.3) shows exactly how this improvement arises — and why F1-optimal ≠ profit-optimal. A simulated retention A/B test shows **14.5% churn reduction** with ~$26K net annual ROI.
 
 ---
 
@@ -37,6 +37,7 @@
 </p>
 
 > **Random Forest** is the recommended model: highest churn recall (75%), best F1 (0.63), and validated AUC (0.844) confirming no overfitting.
+> Note: The confusion matrix at default τ = 0.50 is shown here as a baseline. Section 7 demonstrates why τ = 0.36 is the profit-maximizing cutoff — and how the business outcome changes materially.
 
 ---
 
@@ -86,6 +87,51 @@
 
 > **Lowering the threshold from 0.50 → 0.36** captures more at-risk customers and **maximizes total expected profit at ~$53K** — a significant improvement over the default cutoff.
 
+### How the $53K Improvement Is Calculated (Section 7.2.1–7.2.2)
+
+The profit formula at any threshold τ is:
+
+```
+profit(τ) = Σ [ y_i · s · CLV_i ]  (over all flagged customers i)
+           − n_flagged · C
+```
+
+Where:
+- `y_i` = ground-truth churn label (1 = actual churner, 0 = false alarm)
+- `s = 0.30` = retention success rate (30% of contacted churners are saved)
+- `CLV_i = MonthlyCharges_i × 12` = annual customer lifetime value
+- `C = $50` = per-contact campaign cost
+- `n_flagged` = total customers flagged at threshold τ
+
+Break-even condition: a customer is worth contacting only if `s · CLV_i > C`, i.e., `CLV_i > $50 / 0.30 ≈ $167/year ≈ $14/month`. Since average monthly charges are ~$64, **most churners qualify** — validating the strategy.
+
+At τ = 0.50 vs τ = 0.36:
+
+| | τ = 0.50 (default) | τ = 0.36 (optimal) |
+|---|---|---|
+| Customers flagged | ~220 | ~310 |
+| Precision (actual churners) | ~67% | ~56% |
+| Recall (churners caught) | ~47% | ~75% |
+| Revenue saved | ~$35K | ~$65K |
+| Campaign cost | ~$11K | ~$15.5K |
+| **Net profit** | **~$24K** | **~$53K** |
+
+> **Key insight:** Even though precision *drops* at τ = 0.36, the gain in recall (catching 75% vs 47% of churners) far outweighs the extra false-alarm cost. This is because **false negatives (missed churners) are far more expensive than false positives ($50 contact cost)**.
+
+### Threshold Trade-off Analysis (Section 7.2.3)
+
+<p align="center">
+  <img src="assets/threshold_tradeoff_analysis.png" width="100%" alt="3-panel figure: confusion matrices at τ=0.50 vs τ=0.36, Precision/Recall/F1 curve, and TP/FP/FN count curves" />
+</p>
+
+Three panels show the full trade-off landscape:
+
+1. **Confusion Matrices** — Side-by-side comparison at τ = 0.50 vs τ = 0.36. At the optimal threshold, recall jumps from 47% → 75% while precision decreases moderately. The visual makes clear that the business goal (catch churners) is served by the lower threshold.
+
+2. **Precision / Recall / F1 vs Threshold** — F1 peaks around τ = 0.44, *not* at τ = 0.36. This illustrates a critical lesson: **F1-optimal ≠ profit-optimal**. The profit objective (asymmetric costs: missed churner >> wasted $50 contact) naturally biases toward higher recall.
+
+3. **TP / FP / FN Counts vs Threshold** — Shows exactly how many true churners we miss (FN) and how many non-churners we over-contact (FP) at each cutoff. At τ = 0.36, we recover ~90 additional true churners at the cost of ~70 extra false alarms — a favorable trade given CLV economics.
+
 ---
 
 ## 🧪 A/B Test Design & Simulation
@@ -116,8 +162,10 @@ EDA & Cleaning → Feature Engineering → 3-Way Stratified Split (60/20/20)
         → SHAP Explainability (Global + Local + Segment)
             → Unit Economics & ROI Heatmap
                 → Profit-Maximizing Threshold (τ=0.36)
-                    → A/B Test Power Analysis & Bootstrap Simulation
-                        → Go/No-Go Decision Framework
+                    → P&L Transparent Breakdown (7.2.1–7.2.2)
+                        → Threshold Trade-off Visualization (7.2.3)
+                            → A/B Test Power Analysis & Bootstrap Simulation
+                                → Go/No-Go Decision Framework
 ```
 
 ### Strategic Recommendations (SHAP-Driven)
@@ -135,7 +183,7 @@ EDA & Cleaning → Feature Engineering → 3-Way Stratified Split (60/20/20)
 
 ```
 churn-prediction/
-├── churn prediction.ipynb    # Full analysis notebook (84 cells)
+├── churn prediction.ipynb    # Full analysis notebook (89 cells)
 ├── README.md                 # ← You are here
 ├── requirements.txt          # Python dependencies
 ├── assets/
@@ -145,6 +193,7 @@ churn-prediction/
 │   ├── shap_contract_segment.png
 │   ├── roi_heatmap.png
 │   ├── threshold_optimization.png
+│   ├── threshold_tradeoff_analysis.png   # ← NEW: 3-panel trade-off visualization
 │   ├── feature_importance.png
 │   └── ab_test_simulation.png
 └── data/
@@ -167,12 +216,13 @@ jupyter notebook "churn prediction.ipynb"
 ## 📌 Key Takeaway
 
 > **This project goes beyond "build a model and report AUC."** It answers the questions stakeholders actually ask:
-> - *"How much money does this save us?"* → $53K expected profit at optimal threshold
+> - *"How much money does this save us?"* → $53K expected profit at optimal threshold, with step-by-step P&L breakdown (Section 7.2.1–7.2.2)
+> - *"Why not use the F1-optimal threshold?"* → Because F1-optimal ≠ profit-optimal; asymmetric costs justify higher recall (Section 7.2.3)
 > - *"Which customers should we contact?"* → SHAP-driven segment prioritization
 > - *"How do we validate this before scaling?"* → Full A/B test design with power analysis
 > - *"What's the ROI?"* → ~$26K/year net, robust across cost assumptions
 >
-> **The complete pipeline — prediction → economics → experimentation — demonstrates production-readiness.**
+> **The complete pipeline — prediction → economics → threshold analysis → experimentation — demonstrates production-readiness.**
 
 ---
 
