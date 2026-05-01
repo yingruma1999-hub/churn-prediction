@@ -225,7 +225,7 @@ EDA & Cleaning → Feature Engineering → 3-Way Stratified Split (60/20/20)
 ## 🗂 Project Structure
 
 ```
-churn-prediction/
+customer-retention-optimization/
 ├── churn prediction.ipynb    # Full analysis notebook (89 cells)
 ├── README.md                 # ← You are here
 ├── requirements.txt          # Python dependencies
@@ -248,8 +248,8 @@ churn-prediction/
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/yingruma1999-hub/churn-prediction.git
-cd churn-prediction
+git clone https://github.com/yingruma1999-hub/customer-retention-optimization.git
+cd customer-retention-optimization
 pip install -r requirements.txt
 jupyter notebook "churn prediction.ipynb"
 ```
