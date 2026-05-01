@@ -1,5 +1,5 @@
-<h1 align="center">📱 Telecom Customer Churn Prediction</h1>
-<h3 align="center">From Predictive Modeling to Dollar-Denominated Business Strategy</h3>
+<h1 align="center">💼 Customer Retention Optimization</h1>
+<h3 align="center">From Prediction to Profit-Driven Decision Making</h3>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white" />
@@ -11,7 +11,39 @@
 
 ---
 
-## 🎯 Executive Summary
+## 🚀 Business Impact (TL;DR)
+
+- Increased expected profit by **~$53K** by optimizing intervention threshold (0.50 → 0.36)
+- Reduced churn by **~14.5%** in simulated retention experiment
+- Converted model scores into **unit economics** (cost vs expected value)
+- Demonstrated that **F1-optimal ≠ profit-optimal** under asymmetric business costs
+
+👉 This project focuses on turning predictive models into business decisions.
+
+---
+
+## 🎯 Problem & Solution
+
+**Problem**  
+Churn models often stop at prediction scores, while business teams still need a decision rule: who to contact, how much to spend, and whether intervention is profitable.
+
+**Solution**  
+Instead of only predicting churn probability, this project answers:
+
+- Which customers should we target?
+- How much should we spend to retain them?
+- Will this strategy create positive ROI?
+
+Approach:
+
+**Prediction → Decision → Profit → Experimentation**
+
+**Result**  
+The strategy shifts retention from reactive outreach to profit-optimized targeting.
+
+---
+
+## 🎯 Executive Summary (Technical Context)
 
 > **The Problem:** A telecom company loses ~26% of its customers to churn. Identifying who will leave — and intervening profitably — is critical.
 >
@@ -38,6 +70,17 @@
 
 > **Random Forest** is the recommended model: highest churn recall (75%), best F1 (0.63), and validated AUC (0.844) confirming no overfitting.
 > Note: The confusion matrix at default τ = 0.50 is shown here as a baseline. Section 7 demonstrates why τ = 0.36 is the profit-maximizing cutoff — and how the business outcome changes materially.
+
+---
+
+## 💡 Business Recommendation
+
+- ✅ Use the profit-maximizing threshold (**τ = 0.36**) instead of default 0.50
+- ✅ Prioritize high-risk, high-value customers where expected value is positive
+- ⚠️ Do not optimize only for F1/AUC when intervention costs are asymmetric
+- 🧪 Validate policy changes with controlled retention experiments before scaling
+
+Focus on **incremental profit**, not prediction score quality alone.
 
 ---
 
@@ -234,6 +277,6 @@ jupyter notebook "churn prediction.ipynb"
 
 ## 👤 Author
 
-**Yingru Ma** · Economics Background · Targeting DS / PM Roles
+**Yingru Ma** · Data Analyst | Experimentation & Causal Inference
 
 [![GitHub](https://img.shields.io/badge/GitHub-yingruma1999--hub-181717?logo=github)](https://github.com/yingruma1999-hub)
